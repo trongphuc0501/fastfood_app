@@ -17,7 +17,7 @@ class _UserManagementState extends State<UserManagement> {
   }
 
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://192.168.66.1:3000/users'));
+    final response = await http.get(Uri.parse('http://192.168.52.1:3000/users'));
     if (response.statusCode == 200) {
       setState(() {
         users = json.decode(response.body);

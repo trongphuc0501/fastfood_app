@@ -3,35 +3,6 @@ import '../LOGIN/signin.dart';
 import 'add.dart';
 import 'HOMEADMIN.dart';
 import 'userManagement.dart';
-/*class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Trang chủ ADMIN'),
-      ),
-      body: Center(
-        child: Text('Đây là trang chủ'),
-      ),
-    );
-  }
-}
-*/
-
-/*class ProductScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sản phẩm'),
-      ),
-      body: Center(
-        child: Text('Đây là trang sản phẩm'),
-      ),
-    );
-  }
-}*/
-
 
 class ADMIN extends StatefulWidget {
   @override
@@ -68,7 +39,7 @@ class _MyAppState extends State<ADMIN> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
+              icon: Icon(Icons.add),
               label: 'Sản phẩm',
             ),
             BottomNavigationBarItem(

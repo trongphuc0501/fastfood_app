@@ -29,7 +29,7 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 100,
               ),
-              const Text('FastFood',style: TextStyle(
+              const Text('FastFood App',style: TextStyle(
                   fontSize: 30,
                   color: Colors.white
               ),),

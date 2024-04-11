@@ -40,7 +40,7 @@ class _ProductListScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trang chủ2'),
+        title: Text('Giỏ hàng'),
       ),
       body: Column(
         children: [

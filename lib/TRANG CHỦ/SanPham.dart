@@ -3,37 +3,7 @@ import 'caidat.dart';
 import 'hienthi.dart';
 import '../LOGIN/signin.dart';
 import 'home.dart';
-/*
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Trang chủ'),
-      ),
-      body: Center(
-        child: Text('Đây là trang chủ'),
-      ),
-    );
-  }
-}
-*/
 
-
-/*class ProductScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sản phẩm'),
-      ),
-      body: Center(
-        child: Text('Đây là trang sản phẩm'),
-      ),
-    );
-  }
-}
-*/
 
 class SanPhamne extends StatefulWidget {
   @override
@@ -71,7 +41,7 @@ class _MyAppState extends State<SanPhamne> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
-              label: 'Sản phẩm',
+              label: 'Giỏ hàng',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),

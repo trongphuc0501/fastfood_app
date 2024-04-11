@@ -24,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchProducts() async {
-    final response = await http.get(Uri.parse('http://192.168.66.1:3000/products'));
+    final response = await http.get(Uri.parse('http://192.168.52.1:3000/products'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
