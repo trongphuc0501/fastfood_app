@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 //import 'LOGIN/signup.dart';
 //import 'LOGIN/signin.dart';
 import 'LOGIN/welcome.dart';
-import 'TRANG CHỦ/hienthi.dart';
+import 'TRANG CHỦ/SanPham.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Arial', // Phông chữ cao cấp
       ),
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      home: SanPhamne(),
     );
   }
 }

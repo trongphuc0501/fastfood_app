@@ -43,8 +43,8 @@ class _MyAppState extends State<ADMIN> {
               label: 'Sản phẩm',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Cài đặt',
+              icon: Icon(Icons.manage_accounts_rounded),
+              label: 'Thông tin',
             ),
           ],
         ),

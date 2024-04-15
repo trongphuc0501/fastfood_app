@@ -31,7 +31,8 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const Text('FastFood App',style: TextStyle(
                   fontSize: 30,
-                  color: Colors.white
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
               ),),
               const SizedBox(height: 30,),
               GestureDetector(

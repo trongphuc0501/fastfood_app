@@ -132,11 +132,10 @@ class _SignInPageState extends State<SignInPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>
-                        SignUpPage()), // Thay SignUpScreen() bằng màn hình đăng ký thực tế của bạn
+                    MaterialPageRoute(builder: (context) => SignUpPage()), // Thay SignUpScreen() bằng màn hình đăng ký thực tế của bạn
                   );
                 },
-                child: Text("Bạn chưa có tài khoản? Đăng ký qua Signup"),
+                child: Text("Bạn chưa có tài khoản? Đăng ký"),
               ),
             ],
           ),

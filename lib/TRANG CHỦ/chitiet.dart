@@ -11,6 +11,7 @@ class _UserInformationState extends State<UserInformation> {
   String? email;
   String? address;
 
+
   @override
   void initState() {
     super.initState();
@@ -18,17 +19,20 @@ class _UserInformationState extends State<UserInformation> {
   }
 
   Future<void> fetchUserInfo() async {
-    // Thực hiện yêu cầu GET để lấy thông tin người dùng từ máy chủ
-    var url = Uri.parse('http://192.168.66.1:3000/signup');
+    var url = Uri.parse('http://192.168.52.1:3000/users');
 
     try {
       var response = await http.get(url);
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
+
+        // Lấy thông tin từ người dùng đầu tiên trong danh sách
+        var firstUser = data[1]; // Đây là người dùng đầu tiên trong danh sách
+
         setState(() {
-          email = data['email'];
-          address = data['address'];
+          email = firstUser['email'];
+          address = firstUser['diachi'];
         });
       } else {
         print('Lỗi khi gửi yêu cầu GET: ${response.statusCode}');
@@ -37,6 +41,7 @@ class _UserInformationState extends State<UserInformation> {
       print('Lỗi khi thực hiện yêu cầu: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +53,7 @@ class _UserInformationState extends State<UserInformation> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Email: ${email ?? 'Chưa có email'}'),
+            Text('Email: ${email ?? 'Chưa có email1'}'),
             SizedBox(height: 20),
             Text('Địa chỉ: ${address ?? 'Chưa có địa chỉ'}'),
           ],

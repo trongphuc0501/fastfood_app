@@ -38,9 +38,15 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
           );
           print('Đăng ký thành công');
+
         } else {
           print('emai da ton tai');
-          _emailController.clear();
+          // _emailController.clear();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('emai da ton tai'),
+            ),
+          );
         }
       } catch (e) {
         print('Có lỗi xảy ra: $e');

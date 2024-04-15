@@ -31,7 +31,7 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Giỏ hàng'),
+        title: Text('Giỏ hàng1'),
       ),
       body: ListView.builder(
         itemCount: itemCounts.length,

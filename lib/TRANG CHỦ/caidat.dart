@@ -18,10 +18,11 @@ class SettingsScreen extends StatelessWidget {
             title: Text('Thông tin tài khoản'),
             onTap: () {
               // Điều hướng đến màn hình xem thông tin tài khoản
-              /*Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => UserInformation()),
-              );*/
+              );
+
             },
           ),
           ListTile(
@@ -29,25 +30,12 @@ class SettingsScreen extends StatelessWidget {
             title: Text('Giỏ hàng'),
             onTap: () {
               // Điều hướng đến màn hình xem thông tin tài khoản
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UserInformation()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => UserInformation()),
+              // );
             },
           ),
-          ListTile(
-            leading: Icon(Icons.receipt),
-            title: Text('Hoá đơn'),
-            onTap: () {
-              // Điều hướng đến màn hình xem thông tin tài khoản
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UserInformation()),
-              );
-            },
-          ),
-
-
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Đăng xuất'),
