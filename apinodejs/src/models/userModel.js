@@ -6,7 +6,7 @@ const userSchema = new Schema({
     email: String,
     password: String,
     diachi: String,
-    
+    token:String,
     chucvu: {
         type: String,
         default: 'thanhvien',

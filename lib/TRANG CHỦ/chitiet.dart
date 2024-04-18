@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -10,38 +11,47 @@ class UserInformation extends StatefulWidget {
 class _UserInformationState extends State<UserInformation> {
   String? email;
   String? address;
+  String? username;
+  String? role;
 
+  Future<void> _getUserInfo() async {
+    try {
+      final storage = FlutterSecureStorage();
+      //String? token = await storage.read(key: 'token');
+      String? token = await storage.read(key: 'x-access-token');
+
+
+      if (token != null) {
+        var response = await http.get(
+          Uri.parse('http://192.168.52.1:3000/profile'),
+          headers: {'x-access-token': token},
+        );
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          //var username = data['user']['username'];
+          setState(() {
+            email = data['user']['email'];
+            address = data['user']['diachi'];
+            username = data['user']['username'];
+            role = data['user']['chucvu'];
+          });
+        } else {
+          print('Có lỗi xảy ra khi lấy thông tin người dùng');
+        }
+      } else {
+        print('Không tìm thấy token');
+      }
+    } catch (e) {
+      print('Có lỗi xảy ra: $e');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    fetchUserInfo();
+    _getUserInfo();
   }
-
-  Future<void> fetchUserInfo() async {
-    var url = Uri.parse('http://192.168.52.1:3000/users');
-
-    try {
-      var response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-
-        // Lấy thông tin từ người dùng đầu tiên trong danh sách
-        var firstUser = data[1]; // Đây là người dùng đầu tiên trong danh sách
-
-        setState(() {
-          email = firstUser['email'];
-          address = firstUser['diachi'];
-        });
-      } else {
-        print('Lỗi khi gửi yêu cầu GET: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Lỗi khi thực hiện yêu cầu: $e');
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +63,40 @@ class _UserInformationState extends State<UserInformation> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Email: ${email ?? 'Chưa có email1'}'),
-            SizedBox(height: 20),
-            Text('Địa chỉ: ${address ?? 'Chưa có địa chỉ'}'),
+            if(username == null||username!.isEmpty)
+              Text('Hãy đăng nhập!',style: TextStyle(
+                fontSize: 40,
+              ),),
+            if(username != null)
+              Container(
+                child: Column(
+                  children: [
+                    Text('UserName: ${username}',
+                      style: TextStyle(
+                        fontSize: 30,
+                    ),),
+                    SizedBox(height: 20),
+                    Text('Role: ${role}',
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),),
+                    SizedBox(height: 20),
+                    Text('Email: ${email}',
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),),
+                    SizedBox(height: 20),
+                    Text('Địa chỉ: ${address}',
+                      style: TextStyle(
+                        fontSize: 30,
+                      ),),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
+
     );
   }
 }

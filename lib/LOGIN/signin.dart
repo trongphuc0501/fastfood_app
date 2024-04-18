@@ -39,6 +39,9 @@ class _SignInPageState extends State<SignInPage> {
           var data = jsonDecode(response.body);
           var token = data['token'];
 
+          final storage = FlutterSecureStorage();
+          await storage.write(key: 'x-access-token', value: token);
+
           // Kiểm tra giá trị của email và điều hướng dựa trên kết quả
           if (_emailController.text == 'b' && _passwordController.text == 'b') {
             Navigator.push(
@@ -46,6 +49,10 @@ class _SignInPageState extends State<SignInPage> {
               MaterialPageRoute(builder: (context) => ADMIN()),
             );
           } else {
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //     content: Text('token ne:-----${token}'),
+            //   ),
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SanPhamne()),
@@ -71,6 +78,18 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Đăng nhập'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home),
+            onPressed: () {
+              // Xử lý khi người dùng nhấn vào nút Home
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SanPhamne()),
+              );
+            },
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -143,4 +162,5 @@ class _SignInPageState extends State<SignInPage> {
       ),
     );
   }
+
 }

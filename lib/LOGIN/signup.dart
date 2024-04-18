@@ -85,9 +85,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                   return null;
                 },
-
               ),
-
 
               SizedBox(height: 16.0),
               TextFormField(

@@ -4,6 +4,8 @@ import 'chitiet.dart';
 import '../LOGIN/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -40,9 +42,7 @@ class SettingsScreen extends StatelessWidget {
             leading: Icon(Icons.logout),
             title: Text('Đăng xuất'),
             onTap: () {
-              // Thực hiện các hoạt động để đăng xuất tại đây
-              // Ví dụ: xóa dữ liệu phiên đăng nhập, đặt lại trạng thái, vv.
-
+              logout(); // Gọi hàm logout()
               // Điều hướng đến màn hình đăng nhập (ThongTinScreen) sau khi đăng xuất
               Navigator.pushAndRemoveUntil(
                 context,
@@ -54,5 +54,34 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+  void logout() async {
+    try {
+      // Thực hiện xóa dữ liệu phiên đăng nhập
+      await clearSessionData();
+
+      // Đặt lại trạng thái (nếu cần)
+      resetAppState();
+
+      // Hủy token đang lưu (nếu cần)
+      await revokeToken();
+    } catch (e) {
+      print('Có lỗi xảy ra khi đăng xuất: $e');
+    }
+  }
+  Future<void> clearSessionData() async {
+    // Xóa dữ liệu phiên đăng nhập
+    final storage = FlutterSecureStorage();
+    await storage.delete(key: 'x-access-token');
+    // Hoặc xóa các dữ liệu phiên đăng nhập khác cần thiết
+  }
+
+  void resetAppState() {
+    // Thực hiện đặt lại trạng thái của ứng dụng (nếu cần)
+  }
+
+  Future<void> revokeToken() async {
+    // Hủy token đang lưu (nếu cần)
+    // Thực hiện các yêu cầu API hoặc các hoạt động cụ thể để hủy token
   }
 }

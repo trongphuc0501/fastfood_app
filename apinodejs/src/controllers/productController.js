@@ -14,32 +14,6 @@ exports.index = (req, res) => {
     })
 }
 
-//create function for new product
-/*
-exports.new = function(req, res) {
-    let product = new Product()
-    product.name = req.body.name
-    product.price = req.body.price
-    product.stock = req.body.stock
-    product.gt = req.body.gt
-    product.img=req.body.img
-    product.save(function(err) {
-        if (err) {
-            res.json({
-                status: 'err',
-                code: 500,
-                message: err
-            })
-        }
-        res.json({
-            status: 'success',
-            code: 200,
-            message: 'đã lưu',
-            data: product
-        })
-    })
-}
-*/
 //create fucntion view products
 exports.new = function(req, res) {
     // Kiểm tra xem có sản phẩm nào đã có cùng tên chưa

@@ -35,52 +35,6 @@ class WelcomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold
               ),),
               const SizedBox(height: 30,),
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SignInPage()));
-                },
-                child: Container(
-                  height: 53,
-                  width: 320,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: const Center(child: Text('Đăng Nhập',style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white
-                  ),),),
-                ),
-              ),
-              const SizedBox(height: 30,),
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SignUpPage()));
-                },
-                child: Container(
-                  height: 53,
-                  width: 320,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: const Center(child: Text('Đăng kí',style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                  ),),),
-                ),
-              ),
-              const Spacer(),
-              const Text('Login with Social Media',style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.white
-              ),),//
-              const SizedBox(height: 12,),
             ]
         ),
       ),

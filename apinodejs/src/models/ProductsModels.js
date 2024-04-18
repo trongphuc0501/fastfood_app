@@ -7,7 +7,6 @@ let productShema = mongoose.Schema({
     },
     price: Number,
     stock: String,
-    gt: String, // Thêm trường img kiểu String
     img: String,
     create: {
         type: Date,

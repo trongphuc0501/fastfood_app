@@ -14,9 +14,13 @@ router.post('/signup', async (req, res) => {
         const { username, email, password, diachi, chucvu } = req.body;
 
         // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu hay chưa
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ username });
+        const existingEmail = await User.findOne({ email });
         if (existingUser) {
-            return res.status(409).send('Email đã tồn tại');
+            return res.status(409).send('username đã tồn tại');
+        }
+        if (existingEmail) {
+            return res.status(409).send('email đã tồn tại');
         }
 
         // Tạo một người dùng mới
@@ -26,6 +30,40 @@ router.post('/signup', async (req, res) => {
             password,
             diachi,
             chucvu,
+        });
+
+        // Mã hóa mật khẩu người dùng
+        newUser.password = await newUser.encryptPassword(password);
+
+        // Lưu người dùng vào cơ sở dữ liệu
+        await newUser.save();
+
+        // Tạo mã token
+        const token = jwt.sign({ id: newUser.id }, config.secret, {
+            expiresIn: 60 * 60 * 24 // Hết hạn sau 24 giờ
+        });
+
+        // Lưu token vào cơ sở dữ liệu
+        newUser.token = token;
+        await newUser.save();
+
+        // Trả về thông tin của người dùng kèm theo token
+        res.json({ auth: true, user: newUser, token });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Có vấn đề trong quá trình đăng ký người dùng');
+    }
+});
+
+router.post('/addToCart', async (req, res) => {
+    try {
+        // Nhận dữ liệu từ yêu cầu
+        const { id, name_product, quantity } = req.body;
+
+        // Tạo một người dùng mới
+        const newUser = new User({
+
         });
 
         // Mã hóa mật khẩu người dùng
@@ -84,32 +122,7 @@ router.post('/signin', async(req, res) => {
     }
 });
 
-// Định nghĩa endpoint POST '/products' để tạo sản phẩm mới
-/*
-router.post('/products', async (req, res) => {
-    try {
-        // Nhận dữ liệu từ yêu cầu
-        const { name, price, stock, gt } = req.body;
 
-        // Tạo một sản phẩm mới
-        const product = new Product({
-            name,
-            price,
-            stock,
-            gt,
-        });
-
-        // Lưu sản phẩm vào cơ sở dữ liệu
-        await product.save();
-
-        // Trả về sản phẩm đã được tạo trong phản hồi
-        res.json(product);
-    } catch (e) {
-        console.log(e);
-        res.status(500).send('Có vấn đề trong quá trình tạo sản phẩm');
-    }
-});
-*/
 // Định nghĩa endpoint GET '/dashboard' để hiển thị trang dashboard
 router.get('/dashboard', (req, res) => {
     res.json('dashboard');
@@ -128,6 +141,24 @@ router.get('/users', async (req, res) => {
     } catch (e) {
         console.log(e);
         res.status(500).send('Có vấn đề trong quá trình lấy danh sách người dùng');
+    }
+});
+
+// Định nghĩa endpoint GET '/profile' để lấy thông tin profile của người dùng
+router.get('/profile', verifyToken, async (req, res) => {
+    try {
+        // Lấy thông tin người dùng từ token
+        const user = await User.findById(req.userId);
+
+        if (!user) {
+            return res.status(404).send("Người dùng không tồn tại");
+        }
+
+        // Trả về thông tin profile của người dùng
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Có vấn đề trong quá trình đọc profile người dùng');
     }
 });
 
