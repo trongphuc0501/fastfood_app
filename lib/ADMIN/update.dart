@@ -15,7 +15,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController stockController = TextEditingController();
-  //TextEditingController gtController = TextEditingController();
 
   @override
   void initState() {
@@ -23,11 +22,10 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     nameController.text = widget.product['name'];
     priceController.text = widget.product['price'].toString();
     stockController.text = widget.product['stock'].toString();
-    //gtController.text = widget.product['gt'];
   }
 
   void updateProduct() async {
-    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['id']}');
+    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['name']}');
 
     // Tạo một đối tượng Map chứa dữ liệu cần cập nhật
     Map<String, dynamic> data = {
@@ -93,22 +91,20 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
 
   void deleteProduct() async {
-    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['id']}');
+    //var encodedName = Uri.encodeComponent(widget.product['name']);
+    //var url = Uri.parse('http://192.168.52.1:3000/products/$encodedName');
 
+    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['name']}');
     try {
       var response = await http.delete(url);
-
       if (response.statusCode == 200) {
         // Xóa thành công
-        Navigator.pop(context, true); // Trở về màn hình trước và thông báo xóa thành công
-      } else {
-        // Xóa thất bại
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Lỗi'),
-              content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${response.statusCode}'),
+              title: Text('Ko Lỗi'),
+              content: Text('Xáo thành công: ${widget.product['name']}'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -118,6 +114,38 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                 ),
               ],
             );
+          },
+        );
+        Navigator.pop(context, true); // Trở về màn hình trước và thông báo xóa thành công
+      } else {
+        // Xóa thất bại
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Lỗi'),
+              content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${widget.product['name']}'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+            // return AlertDialog(
+            //   title: Text('Lỗi'),
+            //   content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${response.statusCode}'),
+            //   actions: <Widget>[
+            //     TextButton(
+            //       onPressed: () {
+            //         Navigator.of(context).pop();
+            //       },
+            //       child: Text('OK'),
+            //     ),
+            //   ],
+            // );
           },
         );
       }

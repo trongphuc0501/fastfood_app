@@ -39,7 +39,6 @@ exports.new = function(req, res) {
         product.name = req.body.name;
         product.price = req.body.price;
         product.stock = req.body.stock;
-        product.gt = req.body.gt;
         product.img = req.body.img;
 
         product.save(function(err) {
@@ -80,51 +79,65 @@ exports.view = function(req, res) {
 }
 
 exports.update = function(req, res) {
-    Product.findById(req.params.id, function(err, product) {
+    const name = req.params.name;
+
+    Product.findOne({ name: name }, function(err, product) {
         if (err)
-            res.json({
-                status: 'err',
+            res.status(500).json({
+                status: 'error',
                 code: 500,
                 message: err
-            })
-        product.name = req.body.name
-        product.price = req.body.price
-        product.stock = req.body.stock
-        product.gt = req.body.gt
+            });
+        if (!product) {
+            return res.status(404).json({
+                status: 'error',
+                code: 404,
+                message: 'Không tìm thấy sản phẩm'
+            });
+        }
 
+        // Cập nhật thông tin sản phẩm
+        product.name = req.body.name;
+        product.price = req.body.price;
+        product.stock = req.body.stock;
 
-        product.save(function(err) {
+        // Lưu sản phẩm đã cập nhật vào cơ sở dữ liệu
+        product.save(function(err, updatedProduct) {
             if (err)
-                res.json({
-                    status: 'err',
+                res.status(500).json({
+                    status: 'error',
                     code: 500,
                     message: err
-                })
-            res.json({
+                });
+            res.status(200).json({
                 status: 'success',
                 code: 200,
-                message: 'Registro actualizado',
-                data: product
-            })
-        })
-    })
-}
+                message: 'Sản phẩm đã được cập nhật',
+                data: updatedProduct
+            });
+        });
+    });
+};
+
 
 
 exports.delete = function(req, res) {
-    Product.remove({
-        _id: req.params.id
+    const name = req.params.name;
+
+    Product.deleteOne({
+        name: name
     }, function(err) {
         if (err)
-            res.json({
-                status: 'err',
+            res.status(500).json({
+                status: 'error',
                 code: 500,
                 message: err
-            })
-        res.json({
-            status: 'success',
-            code: 200,
-            message: 'Registros eliminado'
-        })
-    })
-}
+            });
+        else
+            res.status(200).json({
+                status: 'success',
+                code: 200,
+                message: 'Sản phẩm đã được xóa'
+            });
+    });
+};

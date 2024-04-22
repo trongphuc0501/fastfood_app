@@ -6,6 +6,7 @@ const verifyToken = require('./verifyToken');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const productController = require('../controllers/productController');
+const cartController = require('../controllers/cartController');
 
 // Định nghĩa endpoint POST '/signup' để đăng ký người dùng mới
 router.post('/signup', async (req, res) => {
@@ -56,35 +57,32 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.post('/addToCart', async (req, res) => {
-    try {
-        // Nhận dữ liệu từ yêu cầu
-        const { id, name_product, quantity } = req.body;
-
-        // Tạo một người dùng mới
-        const newUser = new User({
-
-        });
-
-        // Mã hóa mật khẩu người dùng
-        newUser.password = await newUser.encryptPassword(password);
-
-        // Lưu người dùng vào cơ sở dữ liệu
-        await newUser.save();
-
-        // Tạo mã token
-        const token = jwt.sign({ id: newUser.id }, config.secret, {
-            expiresIn: 60 * 60 * 24 // Hết hạn sau 24 giờ
-        });
-
-        // Trả về token trong phản hồi
-        res.json({ auth: true, token });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Có vấn đề trong quá trình đăng ký người dùng');
-    }
-});
+//router.post('/addToCart', async (req, res) => {
+//    try {
+//        // Nhận dữ liệu từ yêu cầu
+//        const { id_user, name_product, quantity } = req.body;
+//
+//        // Tạo một sản phẩm mới trong giỏ hàng của người dùng
+//        const newCartItem = new Cart({
+//            id_user: id_user,
+//            name_product: name_product,
+//            quantity: quantity
+//        });
+//
+//        // Lưu sản phẩm vào cơ sở dữ liệu
+//        await newCartItem.save();
+//
+//        // Trả về phản hồi thành công
+//        res.status(201).json({ success: true, message: 'Sản phẩm đã được thêm vào giỏ hàng' });
+//
+//    } catch (error) {
+//        console.error(error);
+//        res.status(500).json({ success: false, message: 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng' });
+//    }
+//});
+router.route('/cart')
+    .get(cartController.index) // Lấy danh sách sản phẩm
+    .post(cartController.new); //tạo
 
 // Endpoint cho các hoạt động liên quan đến sản phẩm
 router.route('/products')
@@ -92,7 +90,7 @@ router.route('/products')
     .post(productController.new); // Tạo sản phẩm mới
 
 // Endpoint cho một sản phẩm cụ thể dựa trên id
-router.route('/product/:id')
+router.route('/products/:name')
     .get(productController.view) // Xem thông tin sản phẩm
     .put(productController.update) // Cập nhật thông tin sản phẩm
     .delete(productController.delete); // Xóa sản phẩm

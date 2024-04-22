@@ -61,7 +61,24 @@ class _SignInPageState extends State<SignInPage> {
         } else if (response.statusCode == 401) {
           print('Sai thông tin đăng nhập');
         } else {
-          print('Có lỗi xảy ra khi đăng nhập');
+          //print('Có lỗi xảy ra khi đăng nhập');
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Lỗi'),
+                content: Text('Không tim thấy thông tin, vui long đăng ký!'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       } catch (e) {
         print('Có lỗi xảy ra: $e');

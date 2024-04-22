@@ -31,11 +31,52 @@ class SettingsScreen extends StatelessWidget {
             leading: Icon(Icons.shopping_cart),
             title: Text('Giỏ hàng'),
             onTap: () {
-              // Điều hướng đến màn hình xem thông tin tài khoản
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => UserInformation()),
-              // );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.discount),
+            title: Text('Voucher'),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Thông tin'),
+                    content: Text('Bạn hiện không có voucher!'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.support_agent_outlined),
+            title: Text('Hỗ trợ'),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Thông tin liên hệ'),
+                    content: Text('Liên hệ qua số 18006060 để được tư vấn.'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
           ListTile(

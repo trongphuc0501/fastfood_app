@@ -105,17 +105,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 final product = filteredProducts[index];
                 Uint8List? imageBytes = product['img'] != null ? base64Decode(product['img']) : null;
                 return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailScreen(
-                          product: product,
-                          similarProducts: products.where((p) => p['gt'] == product['gt']).toList(),
-                        ),
-                      ),
-                    );
-                  },
+                  // onTap: () {
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => ProductDetailScreen(
+                  //         product: product,
+                  //         similarProducts: products.where((p) => p['gt'] == product['gt']).toList(),
+                  //       ),
+                  //     ),
+                  //   );
+                  // },
                   child: ListTile(
                     title: Text(product['name']),
                     subtitle: Column(

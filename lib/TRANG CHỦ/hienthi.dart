@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'chitietSanPham.dart';
 
 class ProductScreen extends StatefulWidget {
   @override
@@ -10,37 +8,68 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductScreen> {
-  List<dynamic> products = [];
+  List<dynamic> cart = []; // Khai báo cart ở đây
+
   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    fetchProducts();
+    fetchCart(); // Gọi fetchCart từ initState
   }
 
-  Future<void> fetchProducts() async {
-    final response = await http.get(Uri.parse('http://192.168.52.1:3000/products'));
+  // Future<void> fetchCart() async {
+  //   final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
+  //     setState(() {
+  //       cart = data;
+  //     });
+  //   } else {
+  //     print('Error calling cart API');
+  //   }
+  // }
+  Future<void> fetchCart() async {
+    final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+
+      // Tạo một danh sách tạm thời để lưu trữ sản phẩm trong giỏ hàng với quantity đã được cập nhật
+      List<Map<String, dynamic>> updatedCart = [];
+
+      // Duyệt qua danh sách sản phẩm từ phản hồi
+      for (var item in data) {
+        // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
+        bool existingProduct = false;
+        for (var existingItem in updatedCart) {
+          if (existingItem['name_product'] == item['name_product']) {
+            // Nếu sản phẩm đã tồn tại, cộng lại quantity
+            existingItem['quantity'] += item['quantity'];
+            existingProduct = true;
+            break;
+          }
+        }
+        // Nếu sản phẩm chưa tồn tại, thêm vào giỏ hàng
+        if (!existingProduct) {
+          updatedCart.add(item);
+        }
+      }
+
+      // Cập nhật giỏ hàng với danh sách sản phẩm đã được cập nhật quantity
       setState(() {
-        products = data;
+        cart = updatedCart;
       });
     } else {
-      print('Error calling API');
+      print('Error calling cart API');
     }
   }
 
-  void addToCart(dynamic product) {
-    // Hàm thêm sp ào giỏ hàng
-    print('Sản phẩm đã được thêm vào giỏ hàng: ${product['name']}');
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Giỏ hàng'),
+        title: Text('Giỏ hàng nè'),
       ),
       body: Column(
         children: [
@@ -48,19 +77,28 @@ class _ProductListScreenState extends State<ProductScreen> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              onChanged: (value) {
-
-              },
+              onChanged: (value) {},
               decoration: InputDecoration(
                 hintText: 'Tìm kiếm',
                 prefixIcon: Icon(Icons.search),
               ),
             ),
           ),
-        ], // Loại bỏ dấu ) này
+          Expanded(
+            child: ListView.builder(
+              itemCount: cart.length,
+              itemBuilder: (context, index) {
+                final item = cart[index];
+                return ListTile(
+                  title: Text("Tên sản phẩm: ${item['name_product']}"),
+                  subtitle: Text("Số lượng: ${item['quantity'].toString()}"),
+                  // Hiển thị các thông tin khác của mỗi mục trong giỏ hàng nếu cần
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
-
-
 }

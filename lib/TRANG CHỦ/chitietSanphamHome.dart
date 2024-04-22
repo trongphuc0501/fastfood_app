@@ -75,6 +75,7 @@ class ProductDetailScreen extends StatelessWidget {
                     // Button for adding to cart
                     ElevatedButton(
                       onPressed: () {
+
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -95,19 +96,19 @@ class ProductDetailScreen extends StatelessWidget {
                       },
                       child: Text('Thêm vào giỏ hàng'),
                     ),
-                    ElevatedButton(
-                      onPressed:  () {
-                        // Thực hiện các hoạt động để đăng xuất tại đây
-                        // Ví dụ: xóa dữ liệu phiên đăng nhập, đặt lại trạng thái, vv.
-
-                        // Điều hướng đến màn hình đăng nhập (ThongTinScreen) sau khi đăng xuất
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProductScreen()),
-                              (route) => false,
-                        );
-                      }, child: Text('Giỏ hàng'),
-                    ),
+                    // ElevatedButton(
+                    //   onPressed:  () {
+                    //     // Thực hiện các hoạt động để đăng xuất tại đây
+                    //     // Ví dụ: xóa dữ liệu phiên đăng nhập, đặt lại trạng thái, vv.
+                    //
+                    //     // Điều hướng đến màn hình đăng nhập (ThongTinScreen) sau khi đăng xuất
+                    //     Navigator.pushAndRemoveUntil(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => ProductScreen()),
+                    //           (route) => false,
+                    //     );
+                    //   }, child: Text('Giỏ hàng'),
+                    // ),
                   ],
                 ),
               ],

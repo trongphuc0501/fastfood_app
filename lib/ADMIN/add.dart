@@ -14,7 +14,6 @@ class _ProductScreenState extends State<ProductScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
-  //TextEditingController gtController = TextEditingController();
 
   File? _imageFile;
   String? _base64Image;
@@ -45,7 +44,6 @@ class _ProductScreenState extends State<ProductScreen> {
     String name = nameController.text;
     String priceString = priceController.text;
     String quantityString = quantityController.text;
-    //String sex = gtController.text;
 
     // Kiểm tra xem các trường đã được nhập đủ hay không
     if (name.isEmpty ||
@@ -72,7 +70,6 @@ class _ProductScreenState extends State<ProductScreen> {
       'name': name,
       'price': price,
       'stock': quantity,
-      // 'gt': sex,
       'img': _base64Image, // Add image data to product data
     };
 
@@ -92,7 +89,6 @@ class _ProductScreenState extends State<ProductScreen> {
         nameController.clear();
         priceController.clear();
         quantityController.clear();
-        //gtController.clear();
       } else {
         // Lỗi
         showErrorSnackBar('Lỗi khi thêm sản phẩm: ${response.statusCode}');
