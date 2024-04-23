@@ -17,7 +17,7 @@ exports.index = (req, res) => {
 //create fucntion view products
 exports.new = function(req, res) {
     // Kiểm tra và xác thực dữ liệu đầu vào
-    if (!req.body.id_user || !req.body.quantity || !req.body.token || !req.body.name_product) {
+    if (!req.body.price || !req.body.name_user || !req.body.quantity || !req.body.name_product) {
         return res.status(400).json({
             status: 'error',
             code: 400,
@@ -27,9 +27,9 @@ exports.new = function(req, res) {
 
     // Nếu không có sản phẩm nào trùng tên, tiến hành tạo sản phẩm mới
     let cart = new Cart({
-        id_user: req.body.id_user,
+        name_user: req.body.name_user,
         quantity: req.body.quantity,
-        token: req.body.token,
+        price: req.body.price,
         name_product: req.body.name_product
     });
 
@@ -81,3 +81,23 @@ exports.view = function(req, res) {
         });
     });
 }
+exports.delete = function(req, res) {
+    const nameProduct = req.params.nameProduct; // Thay 'nameProduct' bằng tên tham số trong route của bạn
+
+    Cart.deleteOne({
+        name_product: nameProduct // Sử dụng 'name_product' thay vì 'name'
+    }, function(err) {
+        if (err)
+            res.status(500).json({
+                status: 'error',
+                code: 500,
+                message: err
+            });
+        else
+            res.status(200).json({
+                status: 'success',
+                code: 200,
+                message: 'Sản phẩm đã được xóa1'
+            });
+    });
+};

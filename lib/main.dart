@@ -33,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Đợi 3 giây sau đó chuyển đến màn hình SanPhamne
     Timer(Duration(seconds: 3), () {
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => SanPhamne()), // Chuyển đến màn hình SanPhamne

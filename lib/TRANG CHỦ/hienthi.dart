@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:fastfood/TRANG%20CH%E1%BB%A6/SanPham.dart';
+import 'package:fastfood/TRANG%20CH%E1%BB%A6/update.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ProductScreen extends StatefulWidget {
@@ -8,7 +11,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductScreen> {
-  List<dynamic> cart = []; // Khai báo cart ở đây
+  List<Map<String, dynamic>> cart = []; // Khai báo cart ở đây
 
   TextEditingController searchController = TextEditingController();
 
@@ -18,58 +21,130 @@ class _ProductListScreenState extends State<ProductScreen> {
     fetchCart(); // Gọi fetchCart từ initState
   }
 
-  // Future<void> fetchCart() async {
-  //   final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //     setState(() {
-  //       cart = data;
-  //     });
-  //   } else {
-  //     print('Error calling cart API');
-  //   }
-  // }
+  Future<String?> _getUserInfo() async {
+    try {
+      final storage = FlutterSecureStorage();
+      String? token = await storage.read(key: 'x-access-token');
+
+      if (token != null) {
+        var response = await http.get(
+          Uri.parse('http://192.168.52.1:3000/profile'),
+          headers: {'x-access-token': token},
+        );
+
+        if (response.statusCode == 200) {
+          var data = jsonDecode(response.body);
+          String? username = data['user']['username'];
+          return username;
+        } else {
+          print('Có lỗi xảy ra khi lấy thông tin người dùng');
+          return null;
+        }
+      } else {
+        print('Không tìm thấy token');
+        return null;
+      }
+    } catch (e) {
+      print('Có lỗi xảy ra: $e');
+      return null;
+    }
+  }
+
   Future<void> fetchCart() async {
-    final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    try {
+      final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-      // Tạo một danh sách tạm thời để lưu trữ sản phẩm trong giỏ hàng với quantity đã được cập nhật
-      List<Map<String, dynamic>> updatedCart = [];
+        List<Map<String, dynamic>> updatedCart = [];
 
-      // Duyệt qua danh sách sản phẩm từ phản hồi
-      for (var item in data) {
-        // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
-        bool existingProduct = false;
-        for (var existingItem in updatedCart) {
-          if (existingItem['name_product'] == item['name_product']) {
-            // Nếu sản phẩm đã tồn tại, cộng lại quantity
-            existingItem['quantity'] += item['quantity'];
-            existingProduct = true;
-            break;
+        String? username = await _getUserInfo();
+
+        // Duyệt qua danh sách sản phẩm từ phản hồi
+        for (var item in data) {
+          // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng hay chưa
+          bool existingProduct = false;
+          if (item['name_user'] == username) { // Kiểm tra nếu sản phẩm trùng với username
+            for (var existingItem in updatedCart) {
+              if (existingItem['name_product'] == item['name_product']) {
+                // Nếu sản phẩm đã tồn tại, cộng lại quantity
+                existingItem['quantity'] += item['quantity'];
+                existingProduct = true;
+                break;
+              }
+            }
+            // Nếu sản phẩm chưa tồn tại, thêm vào giỏ hàng
+            if (!existingProduct) {
+              updatedCart.add(item);
+            }
+          // }else{
+          //   print("không hiện");
+          //   print(username);
+          //   print(item['name_user']);
           }
         }
-        // Nếu sản phẩm chưa tồn tại, thêm vào giỏ hàng
-        if (!existingProduct) {
-          updatedCart.add(item);
-        }
-      }
 
-      // Cập nhật giỏ hàng với danh sách sản phẩm đã được cập nhật quantity
-      setState(() {
-        cart = updatedCart;
-      });
-    } else {
-      print('Error calling cart API');
+        setState(() {
+          cart = updatedCart;
+        });
+      } else {
+        print('Error calling cart API');
+      }
+    } catch (e) {
+      print('Error fetching cart: $e');
     }
+  }
+
+
+  // Future<void> fetchCart() async {
+  //   try {
+  //     final storage = FlutterSecureStorage();
+  //     String? username = await _getUserInfo();
+  //
+  //     final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //
+  //       List<Map<String, dynamic>> updatedCart = [];
+  //
+  //       // Duyệt qua danh sách sản phẩm từ phản hồi
+  //       for (var item in data) {
+  //         // So sánh name_product với username
+  //         if (item['name_product'] == username) {
+  //           // Nếu sản phẩm trùng với username, thêm vào giỏ hàng
+  //           updatedCart.add(item);
+  //         }
+  //       }
+  //
+  //       setState(() {
+  //         cart = updatedCart;
+  //       });
+  //     } else {
+  //       print('Error calling cart API');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching cart: $e');
+  //   }
+  // }
+
+  int calculateTotalPrice() {
+    int total = 0;
+    for (int i = 0; i < cart.length; i++) {
+      int price = int.tryParse(cart[i]['price'].toString()) ?? 0;
+      int quantity = int.tryParse(cart[i]['quantity'].toString()) ?? 0;
+      total += price * quantity;
+    }
+    return total;
   }
 
 
   @override
   Widget build(BuildContext context) {
+    int total = calculateTotalPrice(); // Tính tổng giá tiền từ danh sách sản phẩm trong giỏ hàng
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Giỏ hàng nè'),
+        title: Text('Đây là giỏ hàng nhé'),
       ),
       body: Column(
         children: [
@@ -91,12 +166,90 @@ class _ProductListScreenState extends State<ProductScreen> {
                 final item = cart[index];
                 return ListTile(
                   title: Text("Tên sản phẩm: ${item['name_product']}"),
-                  subtitle: Text("Số lượng: ${item['quantity'].toString()}"),
-                  // Hiển thị các thông tin khác của mỗi mục trong giỏ hàng nếu cần
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Giá: ${item['price']}'),
+                      Text('Số lượng: ${item['quantity']}'),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: () {
+                      print({item['name_product']});
+                      print({item['price']});
+                      print({item['quantity']});
+
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => UpdateProductKH(cart:{item['quantity']}),
+                      //   ),
+                      // );
+                    },
+                  ),
                 );
               },
             ),
           ),
+          // Hiển thị tổng giá tiền
+          Container(
+            padding: EdgeInsets.all(16),
+            alignment: Alignment.centerRight,
+            child: Text(
+              'Tổng giá tiền: $total VND',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          Container(
+            padding: EdgeInsets.all(16),
+            alignment: Alignment.centerRight,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8), // Đặt bán kính cong ở đây
+                color: Colors.brown, // Màu nền của nút
+              ),
+              child: TextButton(
+                onPressed: () {
+                  // Thực hiện hành động khi người dùng nhấn vào nút
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Thông Báo'),
+                        content: Text('Bạn đã thanh toán thành công'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => SanPhamne()),
+                        (route) => false,
+                  );
+                },
+                child: Text('Thanh toán',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Màu chữ của nút
+                  ),
+                ),
+              ),
+            ),
+          ),
+
         ],
       ),
     );

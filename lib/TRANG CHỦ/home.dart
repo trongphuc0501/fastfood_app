@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+//import '../ADMIN/chitietSanpham.dart';
 import 'chitietSanphamHome.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -110,9 +111,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProductDetailScreen(
+                        builder: (context) => ProductDetailsScreen(
                           product: product,
-                          similarProducts: products.where((p) => p['gt'] == product['gt']).toList(),
+                          //similarProducts: products.where((p) => p['gt'] == product['gt']).toList(),
                         ),
                       ),
                     );

@@ -1,9 +1,9 @@
 let mongoose = require('mongoose')
 
 let cartSchema = mongoose.Schema({
-    id_user: String,
+    name_user: String,
     quantity: Number,
-    token: String,
+    price: Number,
     name_product: String
 });
 

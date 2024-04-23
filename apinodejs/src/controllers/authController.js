@@ -84,6 +84,11 @@ router.route('/cart')
     .get(cartController.index) // Lấy danh sách sản phẩm
     .post(cartController.new); //tạo
 
+router.route('/carts/:name_product')
+    //.get(productController.view) // Xem thông tin sản phẩm
+    //.put(productController.update) // Cập nhật thông tin sản phẩm
+    .delete(cartController.delete);
+
 // Endpoint cho các hoạt động liên quan đến sản phẩm
 router.route('/products')
     .get(productController.index) // Lấy danh sách sản phẩm

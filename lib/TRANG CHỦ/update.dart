@@ -2,36 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class UpdateProductScreen extends StatefulWidget {
-  final dynamic product;
+class UpdateProductKH extends StatefulWidget {
+  final dynamic cart;
 
-  UpdateProductScreen({required this.product});
+  UpdateProductKH({required this.cart});
 
   @override
   _UpdateProductScreenState createState() => _UpdateProductScreenState();
 }
 
-class _UpdateProductScreenState extends State<UpdateProductScreen> {
-  TextEditingController nameController = TextEditingController();
+class _UpdateProductScreenState extends State<UpdateProductKH> {
+  //TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-  TextEditingController stockController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    nameController.text = widget.product['name'];
-    priceController.text = widget.product['price'].toString();
-    stockController.text = widget.product['stock'].toString();
+    //nameController.text = widget.product['name'];
+    priceController.text = widget.cart['price'].toString();
+    quantityController.text = widget.cart['quantity'].toString();
   }
 
   void updateProduct() async {
-    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['name']}');
+    var url = Uri.parse('http://192.168.52.1:3000/carts/${widget.cart['name_product']}');
 
     // Tạo một đối tượng Map chứa dữ liệu cần cập nhật
     Map<String, dynamic> data = {
-      'name': nameController.text,
+      //'name': nameController.text,
       'price': double.parse(priceController.text),
-      'stock': int.parse(stockController.text),
+      'quantity': int.parse(quantityController.text),
     };
 
     try {
@@ -94,7 +94,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     //var encodedName = Uri.encodeComponent(widget.product['name']);
     //var url = Uri.parse('http://192.168.52.1:3000/products/$encodedName');
 
-    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['name']}');
+    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.cart['name_product']}');
     try {
       var response = await http.delete(url);
       if (response.statusCode == 200) {
@@ -104,7 +104,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Ko Lỗi'),
-              content: Text('Xóa thành công: ${widget.product['name']}'),
+              content: Text('Xóa thành công: ${widget.cart['name']}'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -124,7 +124,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Lỗi'),
-              content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${widget.product['name']}'),
+              content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${widget.cart['name']}'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -183,16 +183,12 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Tên sản phẩm'),
-            ),
-            TextField(
               controller: priceController,
               decoration: InputDecoration(labelText: 'Giá'),
               keyboardType: TextInputType.number,
             ),
             TextField(
-              controller: stockController,
+              controller: quantityController,
               decoration: InputDecoration(labelText: 'Số lượng'),
               keyboardType: TextInputType.number,
             ),
