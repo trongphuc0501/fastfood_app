@@ -82,10 +82,11 @@ exports.view = function(req, res) {
     });
 }
 exports.delete = function(req, res) {
-    const nameProduct = req.params.nameProduct; // Thay 'nameProduct' bằng tên tham số trong route của bạn
-
+    const id = req.params._id;
+    const nameUser = req.params.name_user;
     Cart.deleteOne({
-        name_product: nameProduct // Sử dụng 'name_product' thay vì 'name'
+        _id: id,
+        name_user: nameUser
     }, function(err) {
         if (err)
             res.status(500).json({
@@ -97,7 +98,54 @@ exports.delete = function(req, res) {
             res.status(200).json({
                 status: 'success',
                 code: 200,
-                message: 'Sản phẩm đã được xóa1'
+                message: 'Sản phẩm đã được xóa123'
             });
     });
 };
+
+exports.update = function(req, res) {
+    const id = req.params._id;
+    const nameUser = req.params.name_user;
+
+    Cart.findOne({_id: id, name_user: nameUser }, function(err, updatedProduct) {
+        if (err) {
+            return res.status(500).json({
+                status: 'error1',
+                code: 500,
+                message: err
+            });
+        }
+        if (!updatedProduct) {
+            return res.status(404).json({
+                status: 'error',
+                code: 404,
+                message: 'Không tìm thấy sản phẩm trong giỏ hàng'
+            });
+        }
+
+        // Cập nhật số lượng sản phẩm
+        updatedProduct.quantity = req.body.quantity;
+
+        // Lưu sản phẩm đã cập nhật vào cơ sở dữ liệu
+        updatedProduct.save(function(err, updatedProduct) {
+            if (err) {
+                return res.status(500).json({
+                    status: 'error2',
+                    code: 500,
+                    message: err
+                });
+            }
+            res.status(200).json({
+                status: 'success',
+                code: 200,
+                message: 'Số lượng sản phẩm trong giỏ hàng đã được cập nhật',
+                data: updatedProduct
+            });
+        });
+    });
+};
+
+
+
+
+

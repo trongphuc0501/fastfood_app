@@ -28,9 +28,27 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.shopping_cart),
-            title: Text('Giỏ hàng'),
+            leading: Icon(Icons.info_outlined),
+            title: Text('Thông tin về chúng tôi'),
             onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('FastFood'),
+                    content: Text('"'"KITCHEN 2022"'" THAM VỌNG TRỞ THÀNH THƯƠNG HIỆU FAST FOOD ĐƯỢC YÊU THÍCH NHẤT VIỆT NAM'
+                        ,textAlign: TextAlign.center),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
           ListTile(

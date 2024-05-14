@@ -1,36 +1,100 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-class UpdateProductKH extends StatefulWidget {
-  final dynamic cart;
+class UpdateProductScreen extends StatefulWidget {
+  final Map<String, dynamic> product;
+  final Function() onDelete; // Thêm trường onDelete để lưu trữ hàm callback
 
-  UpdateProductKH({required this.cart});
+  UpdateProductScreen({required this.product, required this.onDelete});
 
   @override
   _UpdateProductScreenState createState() => _UpdateProductScreenState();
 }
 
-class _UpdateProductScreenState extends State<UpdateProductKH> {
-  //TextEditingController nameController = TextEditingController();
+class _UpdateProductScreenState extends State<UpdateProductScreen> {
+  TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    //nameController.text = widget.product['name'];
-    priceController.text = widget.cart['price'].toString();
-    quantityController.text = widget.cart['quantity'].toString();
+    nameController.text = widget.product['name_product'];
+    priceController.text = widget.product['price'].toString();
+    quantityController.text = widget.product['quantity'].toString();
+  }
+  void deleteProduct() async {
+    var url = Uri.parse('http://192.168.52.1:3000/carts/${widget.product['name_user']}/${widget.product['_id']}');
+    try {
+      var response = await http.delete(url);
+      if (response.statusCode == 200) {
+        // Xóa thành công
+        //widget.onDelete(); // Gọi hàm callback để thông báo về việc xóa sản phẩm
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Thông báo'),
+              content: Text('Xóa thành công!'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+        Navigator.pop(context, true); // Quay lại trang trước đó và cập nhật danh sách sản phẩm
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Thông báo'),
+              content: Text('Xóa thất bại: ${widget.product['name_product']}/${widget.product['_id']}'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      // Lỗi khi thực hiện yêu cầu
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Lỗi'),
+            content: Text('Có lỗi xảy ra khi thực hiện yêu cầu: $e'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void updateProduct() async {
-    var url = Uri.parse('http://192.168.52.1:3000/carts/${widget.cart['name_product']}');
+    var url = Uri.parse('http://192.168.52.1:3000/carts/${widget.product['name_user']}/${widget.product['_id']}');
 
     // Tạo một đối tượng Map chứa dữ liệu cần cập nhật
     Map<String, dynamic> data = {
-      //'name': nameController.text,
-      'price': double.parse(priceController.text),
       'quantity': int.parse(quantityController.text),
     };
 
@@ -54,7 +118,7 @@ class _UpdateProductScreenState extends State<UpdateProductKH> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Lỗi'),
-              content: Text('Có lỗi xảy ra khi cập nhật sản phẩm: ${response.statusCode}'),
+              content: Text('Có lỗi xảy ra khi cập nhật số lượng sản phẩm'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -89,87 +153,6 @@ class _UpdateProductScreenState extends State<UpdateProductKH> {
     }
   }
 
-
-  void deleteProduct() async {
-    //var encodedName = Uri.encodeComponent(widget.product['name']);
-    //var url = Uri.parse('http://192.168.52.1:3000/products/$encodedName');
-
-    var url = Uri.parse('http://192.168.52.1:3000/products/${widget.cart['name_product']}');
-    try {
-      var response = await http.delete(url);
-      if (response.statusCode == 200) {
-        // Xóa thành công
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Ko Lỗi'),
-              content: Text('Xóa thành công: ${widget.cart['name']}'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-        Navigator.pop(context, true); // Trở về màn hình trước và thông báo xóa thành công
-      } else {
-        // Xóa thất bại
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Lỗi'),
-              content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${widget.cart['name']}'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-            // return AlertDialog(
-            //   title: Text('Lỗi'),
-            //   content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${response.statusCode}'),
-            //   actions: <Widget>[
-            //     TextButton(
-            //       onPressed: () {
-            //         Navigator.of(context).pop();
-            //       },
-            //       child: Text('OK'),
-            //     ),
-            //   ],
-            // );
-          },
-        );
-      }
-    } catch (e) {
-      // Lỗi khi thực hiện yêu cầu
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Lỗi'),
-            content: Text('Có lỗi xảy ra khi thực hiện yêu cầu: $e'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,28 +163,65 @@ class _UpdateProductScreenState extends State<UpdateProductKH> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Tên sản phẩm'),
+              enabled: false,
+            ),
             TextField(
               controller: priceController,
               decoration: InputDecoration(labelText: 'Giá'),
-              keyboardType: TextInputType.number,
+              enabled: false,
             ),
             TextField(
               controller: quantityController,
               decoration: InputDecoration(labelText: 'Số lượng'),
-              keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
             ElevatedButton(
-              onPressed: updateProduct,
-              child: Text('Cập nhật sản phẩm'),
+              onPressed: () async {
+                // // Gửi yêu cầu cập nhật sản phẩm đến API
+                // String productId = widget.product['_id'];
+                // String name = nameController.text;
+                // String price = priceController.text;
+                // String quantity = quantityController.text;
+                //
+                // var response = await http.put(
+                //   Uri.parse('http://192.168.52.1:3000/products/$productId'),
+                //   body: {
+                //     'name_product': name,
+                //     'price': price,
+                //     'quantity': quantity,
+                //   },
+                // );
+                //
+                // if (response.statusCode == 200) {
+                //   // Cập nhật thành công
+                //   Navigator.pop(context, true); // Quay lại trang trước đó và cập nhật danh sách sản phẩm
+                // } else {
+                //   // Có lỗi xảy ra
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     SnackBar(content: Text('Có lỗi xảy ra. Vui lòng thử lại sau')),
+                //   );
+                // }
+                updateProduct();
+              },
+              child: Text('Lưu thay đổi'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
             ElevatedButton(
-              onPressed: deleteProduct,
+              onPressed: () {
+                deleteProduct(); // Gọi hàm xóa sản phẩm khi người dùng nhấn nút
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+              ),
               child: Text('Xóa sản phẩm'),
             ),
+
+
           ],
         ),
       ),

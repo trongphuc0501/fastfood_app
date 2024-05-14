@@ -91,9 +91,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
 
   void deleteProduct() async {
-    //var encodedName = Uri.encodeComponent(widget.product['name']);
-    //var url = Uri.parse('http://192.168.52.1:3000/products/$encodedName');
-
     var url = Uri.parse('http://192.168.52.1:3000/products/${widget.product['name']}');
     try {
       var response = await http.delete(url);
@@ -134,18 +131,6 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                 ),
               ],
             );
-            // return AlertDialog(
-            //   title: Text('Lỗi'),
-            //   content: Text('Có lỗi xảy ra khi xóa sản phẩm: ${response.statusCode}'),
-            //   actions: <Widget>[
-            //     TextButton(
-            //       onPressed: () {
-            //         Navigator.of(context).pop();
-            //       },
-            //       child: Text('OK'),
-            //     ),
-            //   ],
-            // );
           },
         );
       }

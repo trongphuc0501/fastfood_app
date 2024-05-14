@@ -95,38 +95,6 @@ class _ProductListScreenState extends State<ProductScreen> {
     }
   }
 
-
-  // Future<void> fetchCart() async {
-  //   try {
-  //     final storage = FlutterSecureStorage();
-  //     String? username = await _getUserInfo();
-  //
-  //     final response = await http.get(Uri.parse('http://192.168.52.1:3000/cart'));
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-  //
-  //       List<Map<String, dynamic>> updatedCart = [];
-  //
-  //       // Duyệt qua danh sách sản phẩm từ phản hồi
-  //       for (var item in data) {
-  //         // So sánh name_product với username
-  //         if (item['name_product'] == username) {
-  //           // Nếu sản phẩm trùng với username, thêm vào giỏ hàng
-  //           updatedCart.add(item);
-  //         }
-  //       }
-  //
-  //       setState(() {
-  //         cart = updatedCart;
-  //       });
-  //     } else {
-  //       print('Error calling cart API');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching cart: $e');
-  //   }
-  // }
-
   int calculateTotalPrice() {
     int total = 0;
     for (int i = 0; i < cart.length; i++) {
@@ -144,7 +112,16 @@ class _ProductListScreenState extends State<ProductScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đây là giỏ hàng nhé'),
+        title: Text('Giỏ hàng'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart), // Icon giỏ hàng
+            onPressed: () {
+              // Thực hiện hành động khi người dùng nhấn vào icon giỏ hàng
+              // Ví dụ: Navigator.push để điều hướng đến trang giỏ hàng
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -176,16 +153,17 @@ class _ProductListScreenState extends State<ProductScreen> {
                   trailing: IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
-                      print({item['name_product']});
-                      print({item['price']});
-                      print({item['quantity']});
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => UpdateProductKH(cart:{item['quantity']}),
-                      //   ),
-                      // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateProductScreen(product: item, onDelete: () {  },),
+                          ),
+                        ).then((value) {
+                          if (value == true) {
+                            // Nếu có thay đổi trên trang cập nhật sản phẩm, cập nhật lại giỏ hàng
+                            fetchCart();
+                          }
+                        });
                     },
                   ),
                 );
@@ -253,5 +231,6 @@ class _ProductListScreenState extends State<ProductScreen> {
         ],
       ),
     );
+
   }
 }

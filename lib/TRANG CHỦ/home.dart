@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trang chủ'),
+        title: Text('Kitchen 2002'),
         actions: [
           IconButton(
             icon: Icon(isAscending ? Icons.sort_by_alpha : Icons.sort_by_alpha_outlined),
