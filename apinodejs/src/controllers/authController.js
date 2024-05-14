@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
+const orderController = require('../controllers/orderController');
+
+
 
 // Định nghĩa endpoint POST '/signup' để đăng ký người dùng mới
 router.post('/signup', async (req, res) => {
@@ -57,29 +60,29 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-//router.post('/addToCart', async (req, res) => {
-//    try {
-//        // Nhận dữ liệu từ yêu cầu
-//        const { id_user, name_product, quantity } = req.body;
-//
-//        // Tạo một sản phẩm mới trong giỏ hàng của người dùng
-//        const newCartItem = new Cart({
-//            id_user: id_user,
-//            name_product: name_product,
-//            quantity: quantity
-//        });
-//
-//        // Lưu sản phẩm vào cơ sở dữ liệu
-//        await newCartItem.save();
-//
-//        // Trả về phản hồi thành công
-//        res.status(201).json({ success: true, message: 'Sản phẩm đã được thêm vào giỏ hàng' });
-//
-//    } catch (error) {
-//        console.error(error);
-//        res.status(500).json({ success: false, message: 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng' });
-//    }
-//});
+const express = require('express');
+const Cart = require('../models/cartModels');
+
+// Route để xóa các mục trong giỏ hàng dựa trên name_user
+router.delete('/cart/:name_user', async (req, res) => {
+  try {
+    const nameUser = req.params.name_user;
+
+    await Cart.deleteMany({ name_user: nameUser });
+
+    res.status(200).json({ message: 'Đã xóa các mục trong giỏ hàng cho người dùng: ' + nameUser });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
+
+router.route('/order')
+    //.get(orderController.index) // Lấy danh sách sản phẩm
+    .post(orderController.new); //tạo
+    //.get(orderController.index);
+
 router.route('/cart')
     .get(cartController.index) // Lấy danh sách sản phẩm
     .post(cartController.new); //tạo

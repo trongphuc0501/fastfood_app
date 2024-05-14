@@ -4,6 +4,7 @@ import 'package:fastfood/TRANG%20CH%E1%BB%A6/update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'order.dart'; // Import file orderService.dart
 
 class ProductScreen extends StatefulWidget {
   @override
@@ -77,10 +78,6 @@ class _ProductListScreenState extends State<ProductScreen> {
             if (!existingProduct) {
               updatedCart.add(item);
             }
-          // }else{
-          //   print("không hiện");
-          //   print(username);
-          //   print(item['name_user']);
           }
         }
 
@@ -104,7 +101,6 @@ class _ProductListScreenState extends State<ProductScreen> {
     }
     return total;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -153,17 +149,17 @@ class _ProductListScreenState extends State<ProductScreen> {
                   trailing: IconButton(
                     icon: Icon(Icons.edit),
                     onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UpdateProductScreen(product: item, onDelete: () {  },),
-                          ),
-                        ).then((value) {
-                          if (value == true) {
-                            // Nếu có thay đổi trên trang cập nhật sản phẩm, cập nhật lại giỏ hàng
-                            fetchCart();
-                          }
-                        });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UpdateProductScreen(product: item, onDelete: () {  },),
+                        ),
+                      ).then((value) {
+                        if (value == true) {
+                          // Nếu có thay đổi trên trang cập nhật sản phẩm, cập nhật lại giỏ hàng
+                          fetchCart();
+                        }
+                      });
                     },
                   ),
                 );
@@ -182,7 +178,6 @@ class _ProductListScreenState extends State<ProductScreen> {
               ),
             ),
           ),
-
           Container(
             padding: EdgeInsets.all(16),
             alignment: Alignment.centerRight,
@@ -192,32 +187,11 @@ class _ProductListScreenState extends State<ProductScreen> {
                 color: Colors.brown, // Màu nền của nút
               ),
               child: TextButton(
-                onPressed: () {
-                  // Thực hiện hành động khi người dùng nhấn vào nút
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Thông Báo'),
-                        content: Text('Bạn đã thanh toán thành công'),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => SanPhamne()),
-                        (route) => false,
-                  );
+                onPressed: () async {
+                  await placeOrder(context, cart, total, _getUserInfo);
                 },
-                child: Text('Thanh toán',
+                child: Text(
+                  'Thanh toán',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -227,10 +201,8 @@ class _ProductListScreenState extends State<ProductScreen> {
               ),
             ),
           ),
-
         ],
       ),
     );
-
   }
 }
