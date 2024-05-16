@@ -6,7 +6,55 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+  }
+
+  Future<void> checkLoginStatus() async {
+    final storage = FlutterSecureStorage();
+    String? token = await storage.read(key: 'x-access-token');
+    setState(() {
+      isLoggedIn = token != null;
+    });
+  }
+
+  void logout() async {
+    try {
+      await clearSessionData();
+      resetAppState();
+      await revokeToken();
+      setState(() {
+        isLoggedIn = false;
+      });
+    } catch (e) {
+      print('Có lỗi xảy ra khi đăng xuất: $e');
+    }
+  }
+
+  Future<void> clearSessionData() async {
+    final storage = FlutterSecureStorage();
+    await storage.delete(key: 'x-access-token');
+  }
+
+  void resetAppState() {
+    // Thực hiện đặt lại trạng thái của ứng dụng (nếu cần)
+  }
+
+  Future<void> revokeToken() async {
+    // Hủy token đang lưu (nếu cần)
+    // Thực hiện các yêu cầu API hoặc các hoạt động cụ thể để hủy token
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,12 +67,10 @@ class SettingsScreen extends StatelessWidget {
             leading: Icon(Icons.person),
             title: Text('Thông tin tài khoản'),
             onTap: () {
-              // Điều hướng đến màn hình xem thông tin tài khoản
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => UserInformation()),
               );
-
             },
           ),
           ListTile(
@@ -36,8 +82,8 @@ class SettingsScreen extends StatelessWidget {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: Text('FastFood'),
-                    content: Text('"'"KITCHEN 2022"'" THAM VỌNG TRỞ THÀNH THƯƠNG HIỆU FAST FOOD ĐƯỢC YÊU THÍCH NHẤT VIỆT NAM'
-                        ,textAlign: TextAlign.center),
+                    content: Text('"KITCHEN 2022" THAM VỌNG TRỞ THÀNH THƯƠNG HIỆU FAST FOOD ĐƯỢC YÊU THÍCH NHẤT VIỆT NAM',
+                        textAlign: TextAlign.center),
                     actions: <Widget>[
                       TextButton(
                         onPressed: () {
@@ -98,49 +144,26 @@ class SettingsScreen extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Đăng xuất'),
+            leading: Icon(isLoggedIn ? Icons.logout : Icons.login),
+            title: Text(isLoggedIn ? 'Đăng xuất' : 'Đăng nhập'),
             onTap: () {
-              logout(); // Gọi hàm logout()
-              // Điều hướng đến màn hình đăng nhập (ThongTinScreen) sau khi đăng xuất
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => SignInPage()),
-                    (route) => false,
-              );
+              if (isLoggedIn) {
+                logout();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignInPage()),
+                      (route) => false,
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignInPage()),
+                );
+              }
             },
           ),
         ],
       ),
     );
-  }
-  void logout() async {
-    try {
-      // Thực hiện xóa dữ liệu phiên đăng nhập
-      await clearSessionData();
-
-      // Đặt lại trạng thái (nếu cần)
-      resetAppState();
-
-      // Hủy token đang lưu (nếu cần)
-      await revokeToken();
-    } catch (e) {
-      print('Có lỗi xảy ra khi đăng xuất: $e');
-    }
-  }
-  Future<void> clearSessionData() async {
-    // Xóa dữ liệu phiên đăng nhập
-    final storage = FlutterSecureStorage();
-    await storage.delete(key: 'x-access-token');
-    // Hoặc xóa các dữ liệu phiên đăng nhập khác cần thiết
-  }
-
-  void resetAppState() {
-    // Thực hiện đặt lại trạng thái của ứng dụng (nếu cần)
-  }
-
-  Future<void> revokeToken() async {
-    // Hủy token đang lưu (nếu cần)
-    // Thực hiện các yêu cầu API hoặc các hoạt động cụ thể để hủy token
   }
 }

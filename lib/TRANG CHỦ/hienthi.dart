@@ -4,6 +4,7 @@ import 'package:fastfood/TRANG%20CH%E1%BB%A6/update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'checkOutScreen.dart';
 import 'order.dart'; // Import file orderService.dart
 
 class ProductScreen extends StatefulWidget {
@@ -178,29 +179,40 @@ class _ProductListScreenState extends State<ProductScreen> {
               ),
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(16),
-            alignment: Alignment.centerRight,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8), // Đặt bán kính cong ở đây
-                color: Colors.brown, // Màu nền của nút
-              ),
-              child: TextButton(
-                onPressed: () async {
-                  await placeOrder(context, cart, total, _getUserInfo);
-                },
-                child: Text(
-                  'Thanh toán',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white, // Màu chữ của nút
+          // Bên trong phương thức build của ProductScreen
+          if (cart.isNotEmpty) // Kiểm tra nếu giỏ hàng không trống
+            Container(
+              padding: EdgeInsets.all(16),
+              alignment: Alignment.centerRight,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8), // Đặt bán kính cong ở đây
+                  color: Colors.brown, // Màu nền của nút
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CheckoutScreen(
+                          cart: cart,
+                          total: total,
+                          getUserInfo: _getUserInfo,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Thanh toán',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Màu chữ của nút
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
