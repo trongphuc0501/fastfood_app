@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../LOGIN/signin.dart';
 import 'add.dart';
 import 'HOMEADMIN.dart';
-import 'userManagement.dart';
+import 'setting.dart';
 
 class ADMIN extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _MyAppState extends State<ADMIN> {
   final List<Widget> _screens = [
     HomeScreen(),
     ProductScreen(),
-    UserManagement(),
+    Setting(),
   ];
 
   @override
@@ -43,8 +43,8 @@ class _MyAppState extends State<ADMIN> {
               label: 'Sản phẩm',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.manage_accounts_rounded),
-              label: 'Thông tin',
+              icon: Icon(Icons.settings_suggest),
+              label: 'Tác vụ',
             ),
           ],
         ),

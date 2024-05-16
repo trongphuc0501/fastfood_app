@@ -8,8 +8,7 @@ const config = require('../config');
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
 const orderController = require('../controllers/orderController');
-
-
+const voucherController = require('../controllers/voucherController');
 
 // Định nghĩa endpoint POST '/signup' để đăng ký người dùng mới
 router.post('/signup', async (req, res) => {
@@ -82,6 +81,9 @@ router.route('/order')
     //.get(orderController.index) // Lấy danh sách sản phẩm
     .post(orderController.new); //tạo
     //.get(orderController.index);
+
+router.route('/voucher')
+    .post(voucherController.createVoucher);
 
 router.route('/cart')
     .get(cartController.index) // Lấy danh sách sản phẩm
