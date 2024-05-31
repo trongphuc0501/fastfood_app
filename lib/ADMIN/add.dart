@@ -14,6 +14,7 @@ class _ProductScreenState extends State<ProductScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
 
   File? _imageFile;
   String? _base64Image;
@@ -44,12 +45,13 @@ class _ProductScreenState extends State<ProductScreen> {
     String name = nameController.text;
     String priceString = priceController.text;
     String quantityString = quantityController.text;
+    String typeString = typeController.text;
 
     // Kiểm tra xem các trường đã được nhập đủ hay không
     if (name.isEmpty ||
         priceString.isEmpty ||
         quantityString.isEmpty ||
-        //sex.isEmpty ||
+        typeString.isEmpty ||
         _imageFile == null) {
       showErrorSnackBar('Vui lòng nhập đủ thông tin và chọn ảnh');
       return;
@@ -70,6 +72,7 @@ class _ProductScreenState extends State<ProductScreen> {
       'name': name,
       'price': price,
       'stock': quantity,
+      'type':typeString,
       'img': _base64Image, // Add image data to product data
     };
 
@@ -89,6 +92,7 @@ class _ProductScreenState extends State<ProductScreen> {
         nameController.clear();
         priceController.clear();
         quantityController.clear();
+        typeController.clear();
       } else {
         // Lỗi
         showErrorSnackBar('Lỗi khi thêm sản phẩm: ${response.statusCode}');
@@ -161,6 +165,10 @@ class _ProductScreenState extends State<ProductScreen> {
               controller: quantityController,
               decoration: InputDecoration(labelText: 'Số lượng'),
               keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: typeController,
+              decoration: InputDecoration(labelText: 'Loại'),
             ),
             ElevatedButton(
               onPressed: _openImagePicker,

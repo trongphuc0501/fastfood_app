@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-//import '../ADMIN/chitietSanpham.dart';
+
 import 'chitietSanphamHome.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,12 +10,16 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+enum ProductCategory { burger, drink, sandwich, spicyNoodle }
+
 class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> products = [];
   List<dynamic> filteredProducts = [];
   TextEditingController searchController = TextEditingController();
   bool isAscending = true;
   bool sortByPriceAscending = true;
+  ProductCategory selectedCategory = ProductCategory.burger; // Mặc định là burger
+  String selectedType = ''; // Loại sản phẩm được chọn
 
   @override
   void initState() {
@@ -34,6 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       print('Error calling API');
     }
+  }
+
+  void filterTypeProducts(String type) {
+    setState(() {
+      filteredProducts = products.where((product) {
+        final String productType = product['type'].toString().toLowerCase();
+        return productType == type.toLowerCase();
+      }).toList();
+      selectedType = type; // Cập nhật loại sản phẩm được chọn
+    });
   }
 
   void filterProducts(String keyword) {
@@ -67,11 +81,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void filterByCategory(ProductCategory category) {
+    setState(() {
+      selectedCategory = category;
+      filteredProducts = products
+          .where((product) => product['category'] == category.toString().split('.').last)
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Kitchen 2002'),
+        title: Text('Kitchen 20023'),
         actions: [
           IconButton(
             icon: Icon(isAscending ? Icons.sort_by_alpha : Icons.sort_by_alpha_outlined),
@@ -83,7 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-
       body: Column(
         children: [
           Padding(
@@ -97,6 +119,62 @@ class _HomeScreenState extends State<HomeScreen> {
                 hintText: 'Tìm kiếm',
                 prefixIcon: Icon(Icons.search),
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    Radio<String>(
+                      value: 'nước',
+                      groupValue: selectedType,
+                      onChanged: (String? value) {
+                        filterTypeProducts(value!);
+                      },
+                    ),
+                    Text('Nước'),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Radio<String>(
+                      value: 'mỳ cay',
+                      groupValue: selectedType,
+                      onChanged: (String? value) {
+                        filterTypeProducts(value!);
+                      },
+                    ),
+                    Text('Mỳ cay'),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Radio<String>(
+                      value: 'bánh mỳ',
+                      groupValue: selectedType,
+                      onChanged: (String? value) {
+                        filterTypeProducts(value!);
+                      },
+                    ),
+                    Text('Bánh mỳ'),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Radio<String>(
+                      value: 'burger',
+                      groupValue: selectedType,
+                      onChanged: (String? value) {
+                        filterTypeProducts(value!);
+                      },
+                    ),
+                    Text('Burger'),
+                  ],
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -113,7 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       MaterialPageRoute(
                         builder: (context) => ProductDetailsScreen(
                           product: product,
-                          //similarProducts: products.where((p) => p['gt'] == product['gt']).toList(),
                         ),
                       ),
                     );
@@ -123,20 +200,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Price: ${product['price']}'),
-                        Text('Stock: ${product['stock']}'),
+                        Text('Giá: ${product['price']}'),
+                        Text('Kho: ${product['stock']}'),
                       ],
                     ),
-                    leading: Hero(
-                      tag: 'product_image_${product['id']}',
-                      child: imageBytes != null
-                          ? Image.memory(
-                        imageBytes,
-                        width: 50,
-                        height: 50,
-                      )
-                          : Container(),
-                    ),
+                    leading: imageBytes != null
+                        ? Image.memory(
+                      imageBytes,
+                      width: 50,
+                      height: 50,
+                    )
+                        : Container(),
                   ),
                 );
               },

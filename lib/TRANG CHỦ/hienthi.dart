@@ -145,6 +145,7 @@ class _ProductListScreenState extends State<ProductScreen> {
                     children: [
                       Text('Giá: ${item['price']}'),
                       Text('Số lượng: ${item['quantity']}'),
+                      Text('Note: ${item['note']}')
                     ],
                   ),
                   trailing: IconButton(

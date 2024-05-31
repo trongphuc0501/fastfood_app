@@ -16,6 +16,7 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final TextEditingController voucherController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController phone_numberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
             ),
             SizedBox(height: 16),
+            TextField(
+              controller: phone_numberController,
+              decoration: InputDecoration(
+                labelText: 'Nhập số điện thoại',
+              ),
+            ),
+            SizedBox(height: 16),
             Text(
               'Tổng giá tiền: ${widget.total} VND',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -48,7 +56,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
-                await placeOrder(context, widget.cart, widget.total, widget.getUserInfo, addressController.text);
+                await placeOrder(context, widget.cart, widget.total, widget.getUserInfo, addressController.text,phone_numberController.text);
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => SanPhamne()),

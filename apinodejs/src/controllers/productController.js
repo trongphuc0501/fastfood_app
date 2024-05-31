@@ -40,6 +40,7 @@ exports.new = function(req, res) {
         product.price = req.body.price;
         product.stock = req.body.stock;
         product.img = req.body.img;
+        product.type = req.body.type;
 
         product.save(function(err) {
             if (err) {

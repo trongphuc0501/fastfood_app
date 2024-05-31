@@ -35,12 +35,12 @@ Future<void> deleteCartItems(BuildContext context, String nameUser) async {
   }
 }
 
-Future<void> placeOrder(BuildContext context, List<Map<String, dynamic>> cart, int total, Future<String?> Function() getUserInfo, String address) async {
+Future<void> placeOrder(BuildContext context, List<Map<String, dynamic>> cart, int total, Future<String?> Function() getUserInfo, String address,String phone_number) async {
   try {
     String? nameUser = await getUserInfo();
 
     if (nameUser != null) {
-      await createOrder(context, nameUser, cart, total, address);
+      await createOrder(context, nameUser, cart, total, address,phone_number);
     } else {
       print('Không thể lấy thông tin người dùng');
     }
@@ -49,12 +49,13 @@ Future<void> placeOrder(BuildContext context, List<Map<String, dynamic>> cart, i
   }
 }
 
-Future<void> createOrder(BuildContext context, String nameUser, List<Map<String, dynamic>> cart, int total, String address) async {
+Future<void> createOrder(BuildContext context, String nameUser, List<Map<String, dynamic>> cart, int total, String address, String phone_number) async {
   try {
     final orderData = {
       'name_user': nameUser,
       'cart': cart,
       'total': total,
+      'phone_number':phone_number,
       'address': address, // Thêm địa chỉ vào dữ liệu đơn đặt hàng
     };
 

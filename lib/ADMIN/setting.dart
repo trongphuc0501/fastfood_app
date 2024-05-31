@@ -136,7 +136,18 @@ class _SettingState extends State<Setting> {
           ),
           ListTile(
             leading: Icon(Icons.person),
-            title: Text('Thao tác'),
+            title: Text('Người dùng'),
+            onTap: () {
+              // Navigate to user management screen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UserManagement()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.payments),
+            title: Text('Quản lý đơn hàng'),
             onTap: () {
               // Navigate to user management screen
               Navigator.push(
@@ -150,17 +161,3 @@ class _SettingState extends State<Setting> {
     );
   }
 }
-
-// class UserManagement extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Quản lý người dùng'),
-//       ),
-//       body: Center(
-//         child: Text('Trang quản lý người dùng'),
-//       ),
-//     );
-//   }
-// }

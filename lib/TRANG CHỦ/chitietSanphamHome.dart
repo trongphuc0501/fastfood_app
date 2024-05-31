@@ -17,6 +17,7 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   TextEditingController quantityController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +59,32 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text(
+                      'Note:',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(width: 8),
+                    // Text field for quantity input
+                    Expanded(
+                      child: TextFormField(
+                        controller: noteController,
+                        //keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(' '),
+                  ],
+                ),
                 Row(
                   children: [
                     Text(
@@ -147,55 +174,102 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     }
   }
 
+  void addToCart(Map<String, dynamic> product, int quantity, String userToken) async {
+    try {
+      // Lấy thông tin username của người đăng nhập
+      String? username = await _getUserInfo();
 
-  void addToCart(Map<String, dynamic> product, int quantity,
-      String userToken) async {
-    {
-      try {
-        // Lấy thông tin username của người đăng nhập
-        //String? username = await getUsername(userToken);
-        String? username = await _getUserInfo();
+      if (username != null) {
+        // Tạo một đối tượng chứa dữ liệu để gửi đi
+        Map<String, dynamic> requestData = {
+          'name_user': username,
+          'quantity': quantity,
+          'price': product['price'],
+          'name_product': product['name'],
+          'note': noteController.text,  // Extract text from noteController
+        };
 
-        if (username != null) {
-          // Tạo một đối tượng chứa dữ liệu để gửi đi
-          Map<String, dynamic> requestData = {
-            'name_user': username,
-            'quantity': quantity,
-            'price': product['price'],
-            'name_product': product['name']
+        // Gửi yêu cầu POST để thêm sản phẩm vào giỏ hàng
+        final response = await http.post(
+          Uri.parse('http://192.168.52.1:3000/cart'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(requestData),
+        );
 
-          };
-
-          // Gửi yêu cầu POST để thêm sản phẩm vào giỏ hàng
-          final response = await http.post(
-            Uri.parse('http://192.168.52.1:3000/cart'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(requestData),
-          );
-
-          // Kiểm tra xem yêu cầu đã thành công hay không
-          if (response.statusCode == 200) {
-            // Xử lý khi yêu cầu thành công
-            print('Sản phẩm đã được thêm vào giỏ hàng.');
-            print('Response: ${response.body}');
-          } else {
-            // Xử lý khi yêu cầu không thành công
-            print('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
-            print('Error: ${response.body} ');
-            print(username);
-            print( quantity);
-            print(product['price']);
-            print(product['name']);
-          }
+        // Kiểm tra xem yêu cầu đã thành công hay không
+        if (response.statusCode == 200) {
+          // Xử lý khi yêu cầu thành công
+          print('Sản phẩm đã được thêm vào giỏ hàng.');
+          print('Response: ${response.body}');
         } else {
-          print('Error: Username is null');
+          // Xử lý khi yêu cầu không thành công
+          print('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+          print('Error: ${response.body} ');
+          print(username);
+          print(quantity);
+          print(product['price']);
+          print(product['name']);
         }
-      } catch (error) {
-        // Xử lý khi có lỗi xảy ra trong quá trình gửi yêu cầu
-        print('Có lỗi xảy ra: $error');
+      } else {
+        print('Error: Username is null');
       }
+    } catch (error) {
+      // Xử lý khi có lỗi xảy ra trong quá trình gửi yêu cầu
+      print('Có lỗi xảy ra: $error');
     }
   }
+
+  // void addToCart(Map<String, dynamic> product, int quantity,
+  //     String userToken) async {
+  //   {
+  //     try {
+  //       // Lấy thông tin username của người đăng nhập
+  //       //String? username = await getUsername(userToken);
+  //       String? username = await _getUserInfo();
+  //
+  //       if (username != null) {
+  //         // Tạo một đối tượng chứa dữ liệu để gửi đi
+  //         Map<String, dynamic> requestData = {
+  //           'name_user': username,
+  //           'quantity': quantity,
+  //           'price': product['price'],
+  //           'name_product': product['name'],
+  //           'note':noteController,
+  //
+  //         };
+  //
+  //         // Gửi yêu cầu POST để thêm sản phẩm vào giỏ hàng
+  //         final response = await http.post(
+  //           Uri.parse('http://192.168.52.1:3000/cart'),
+  //           headers: <String, String>{
+  //             'Content-Type': 'application/json; charset=UTF-8',
+  //           },
+  //           body: jsonEncode(requestData),
+  //         );
+  //
+  //         // Kiểm tra xem yêu cầu đã thành công hay không
+  //         if (response.statusCode == 200) {
+  //           // Xử lý khi yêu cầu thành công
+  //           print('Sản phẩm đã được thêm vào giỏ hàng.');
+  //           print('Response: ${response.body}');
+  //         } else {
+  //           // Xử lý khi yêu cầu không thành công
+  //           print('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.');
+  //           print('Error: ${response.body} ');
+  //           print(username);
+  //           print( quantity);
+  //           print(product['price']);
+  //           print(product['name']);
+  //         }
+  //       } else {
+  //         print('Error: Username is null');
+  //       }
+  //     } catch (error) {
+  //       // Xử lý khi có lỗi xảy ra trong quá trình gửi yêu cầu
+  //       print('Có lỗi xảy ra: $error');
+  //     }
+  //   }
+  // }
 }

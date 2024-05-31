@@ -30,7 +30,8 @@ exports.new = function(req, res) {
         name_user: req.body.name_user,
         quantity: req.body.quantity,
         price: req.body.price,
-        name_product: req.body.name_product
+        name_product: req.body.name_product,
+        note:req.body.note
     });
 
     // Lưu giỏ hàng vào cơ sở dữ liệu

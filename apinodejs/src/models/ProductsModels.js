@@ -11,7 +11,8 @@ let productShema = mongoose.Schema({
     create: {
         type: Date,
         default: Date.now,
-    }
+    },
+    type: String,
 });
 
 

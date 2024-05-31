@@ -4,7 +4,8 @@ let cartSchema = mongoose.Schema({
     name_user: String,
     quantity: Number,
     price: Number,
-    name_product: String
+    name_product: String,
+    note:String
 });
 
 
